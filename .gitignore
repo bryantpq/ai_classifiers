@@ -1,3 +1,8 @@
+# Manual
+cifar-10-batches-py/
+tutorials/
+*.swp
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

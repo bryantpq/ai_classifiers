@@ -1,0 +1,11 @@
+(a) What are the main techniques you are featuring in your project?
+For building a decision tree in the random forest, we will construct a tree consisting of question nodes and terminal
+nodes. The question nodes will be used to determine where each row of the data should be directed - where each
+row either passes or fails a question node, creating at most two children nodes. As such a decision tree will also be
+a binary tree. From there we will create multiple decision trees to create a forest of which each tree will "vote" for what
+label should be assigned to the object/data.
+
+(b) How far along is your implementation (what works, what does not yet work?)
+Most of the time has been spent studying how to correctly implement our classifiers - Random Forests and Neutal Networks.
+We currently have boilerplate code to implement a Decision Tree which will later be used for the Random Forest classifier.
+We are looking into Random Forests to understand how each decision tree should be different from one another.
