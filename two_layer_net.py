@@ -60,7 +60,7 @@ class TwoLayeredNet(object):
         grads['b1'] = db1
         grads['b2'] = db2
 
-    def train(self, X, y, X_val, y_val,
+    def train(self, X, y,
               learning_rate=1e-3, learning_rate_decay=0.95,
               reg=5e-6, num_iters=100,
               batch_size=200, verbose=False):
