@@ -54,7 +54,7 @@ def use_nn(data):
     X = np.array(training_data[0])
     y = np.array(training_data[1])
 
-    net.train(X, y)
+    net.train(X, y, learning_rate=1e-4, learning_rate_decay=0.95, reg=5e-6, num_iters=1500, batch_size=300)
 
     test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
     pred_y = net.predict(test_data)
