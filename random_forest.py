@@ -9,19 +9,19 @@ import random as r
 
 
 class RandomForest:
-    def __init__(data, n_trees, sampling_percentage=0.7):
-        self.N_TREES = n_trees
-        self.trees = self.__train_tree(data) if n_trees == 1 else self.__train_forest(data, sampling_percentage)
+    def __init__(self, data, n_trees, sampling_percentage=0.7):
+        self.N_TREES = int(n_trees)
+        self.trees = self.__train_tree(data) if int(n_trees) == 1 else self.__train_forest(data, sampling_percentage)
 
 
-    def __train_tree(data):
+    def __train_tree(self, data):
         trees = []
         trees.append(dt.build_decision_tree)
 
         return trees
 
 
-    def __train_forest(data, sampling_percent):
+    def __train_forest(self, data, sampling_percent):
         '''
         Returns an array of n_trees decision trees.
         '''
@@ -34,7 +34,7 @@ class RandomForest:
         return trees
 
 
-    def classify(row, label=True):
+    def classify(self, row, label=True):
         '''
         Aggregates the results from the decision trees on the given row.
         '''

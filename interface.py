@@ -55,8 +55,15 @@ def use_random_forest(data):
         n_trees = input("> ")
     rf = RandomForest(training_data, n_trees) # create and train random forest
     test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
-    for i in range(10000):
+    for i in range(len(test_labels)):
+        # TODO:
+        # Something wrong here lol
+        print(i)
+        print(test_labels[i])
+        print(test_data[i])
         test_data = np.append(test_data[i], test_labels[i])
+        print(test_data)
+        print()
     
     pass_count = 0
     fail_count = 0
