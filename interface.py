@@ -2,7 +2,8 @@
 Bryan Quah, Matthew Xu
 CSE 415 Project
 '''
-
+from two_layer_net import TwoLayeredNet
+from random_forest import RandomForest
 def main():
     # 1. determine which classifier
     # 2. determine which data set to train on
