@@ -20,7 +20,7 @@ class Question:
         data = row[self.col]
         return data >= self.value if self.is_numeric(data) else data == self.value
 
-    def is_numeric(val):
+    def is_numeric(self, val):
         '''
         Returns true if a value is numeric, i.e. int or float
         '''
