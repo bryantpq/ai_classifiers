@@ -10,9 +10,7 @@ from random_forest import RandomForest
 
 def main():
     print_intro()
-    print()
     classifier = get_classifier()
-    print()
     data_set = get_data()
     if classifier == "1":
         use_random_forest(data_set)
@@ -24,6 +22,7 @@ def print_intro():
     print("CSE 415 Project on classifiers by Bryan & Matthew.")
     print("This program selects a classifier and trains it on a selected data set.")
     print("After that, it runs the trained classifier on some testing data and reports the results.")
+    print()
 
 def get_classifier():
     print("The available classifiers are a (1) Random Forest and (2) Neural Network.")
@@ -32,6 +31,7 @@ def get_classifier():
     while user_clas != "1" and user_clas != "2":
         print("Please enter \"1\" for Random Forest or \"2\" for Neural Network...")
         user_clas = input("> ")
+    print()
     return user_clas
 
 def get_data():
@@ -41,6 +41,7 @@ def get_data():
     while user_data != "1" and user_data != "2":
         print("Please enter \"1\" for CIFAR-10 or \"2\" for CS:GO Matching data.")
         user_data = input("> ")
+    print()
     return user_data
     
 def use_random_forest(data):
@@ -48,7 +49,7 @@ def use_random_forest(data):
     # add code to use csgo data instead
     training_data = aggregate_cifar() if data == "1" else aggregate_cifar()
     trees = input("How many decision trees would you like to use in your " +\
-                    "random forest? Use 1 for a decision tree\n > ")
+                    "random forest? Use 1 for a decision tree\n> ")
     while not trees.isdigit() or int(trees) < 1:
         print("Please enter an integer greater than 1...")
         trees = input("> ")
@@ -93,7 +94,7 @@ def unpickle(file):
     '''
     import pickle
     with open(file, 'rb') as fo:
-        dict = pickle.load(fo, encoding='bytes')
+        dict = pickle.load(fo, encoding='latin1')
     return dict['data'], dict['labels']
 
 if __name__ == "__main__":
