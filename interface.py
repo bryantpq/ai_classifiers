@@ -50,11 +50,16 @@ def use_nn(data):
     num_classes = 10
     net = TwoLayeredNet(input_size, hidden_size, num_classes)
     print('Using default parameters to train: 80 hidden nodes, 1500 iterations, 300 batch size, 1e-4 learning rate, 0.95 learning rate decay, and 0.7 regularization strength')
-    training_data = aggregate_cifar()
-    print(np.array(training_data).shape)
-    X = training_data[0:3072][:]
-    print(np.array(X).shape)
-    net.train()
+    training_data = aggregate_cifar(False)
+    X = np.array(training_data[0])
+    y = np.array(training_data[1])
+
+    net.train(X, y)
+
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
+    pred_y = net.predict(test_data)
+    print(test_labels)
+
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
