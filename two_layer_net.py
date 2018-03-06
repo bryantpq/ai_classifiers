@@ -1,5 +1,4 @@
 import numpy as np
-from past.builtins import xrange
 
 class TwoLayeredNet(object):
 
@@ -72,7 +71,7 @@ class TwoLayeredNet(object):
         iterations_per_epoch = max(num_train / batch_size, 1)
 
 
-        for it in xrange(num_iters):
+        for it in range(num_iters):
             X_batch = None
             y_batch = None
 
