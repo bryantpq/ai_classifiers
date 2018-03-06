@@ -14,7 +14,7 @@ class TwoLayeredNet(object):
 
     def loss(self, X, y=None, r=0.0):
         """
-        Calculates loss and gradient 
+        Calculates loss and gradient returns only scores if y is None 
         """
 
         W1 = self.params['W1']
@@ -23,16 +23,13 @@ class TwoLayeredNet(object):
         b2 = self.params['b2']
         N, D = X.shape
 
-        scores = None
-
+        #forward pass
         y_s = np.dot(X,W1) + b1
         h = np.maximum(y_s, 0)
         scores = np.dot(h, W2) + b2
 
         if y is None:
             return scores
-
-        loss = None
 
         scores -= np.amax(scores)
         smax = np.exp(scores) / np.sum(np.exp(scores), axis = 1, keepdims = True)
@@ -44,6 +41,7 @@ class TwoLayeredNet(object):
 
         grads = {}
 
+        #backprop
         dsmax = smax
         dsmax[range(N), y] -= 1
         dsmax /= N
