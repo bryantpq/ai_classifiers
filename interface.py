@@ -5,8 +5,8 @@ CSE 415 Project
 
 import numpy as np
 
+from two_layer_net import TwoLayeredNet
 from random_forest import RandomForest
-# import NeuralNet as nn
 
 def main():
     print_intro()
