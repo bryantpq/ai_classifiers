@@ -15,7 +15,7 @@ def main():
     if classifier == "1":
         use_random_forest(data_set)
     else:
-        use_nn(data_set)
+        # use_neural_net
         pass
 
 def print_intro():
@@ -43,29 +43,18 @@ def get_data():
         user_data = input("> ")
     print()
     return user_data
-
-def use_nn(data):
-    input_size = 32 * 32 * 3
-    hidden_size = 80
-    num_classes = 10
-    net = TwoLayeredNet(input_size, hidden_size, num_classes)
-    print('Using default parameters to train: 80 hidden nodes, 1500 iterations, 300 batch size, 1e-4 learning rate, 0.95 learning rate decay, and 0.7 regularization strength')
-    training_data = aggregate_cifar()
-    print(training_data.shape)
-    X = training_data[:][0:3072]
-    print(X.shape)
-    net.train()
+    
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
     training_data = aggregate_cifar() if data == "1" else aggregate_cifar()
-    trees = input("How many decision trees would you like to use in your " +\
+    n_trees = input("How many decision trees would you like to use in your " +\
                     "random forest? Use 1 for a decision tree\n> ")
-    while not trees.isdigit() or int(trees) < 1:
+    while not n_trees.isdigit() or int(n_trees) < 1:
         print("Please enter an integer greater than 1...")
-        trees = input("> ")
-    rf = RandomForest(training_data, trees) # create and train random forest
-    test_data, test_labels = unpickle("cifar-10-batches-py/test-batch")
+        n_trees = input("> ")
+    rf = RandomForest(training_data, n_trees) # create and train random forest
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
     for i in range(10000):
         test_data = np.append(test_data[i], test_labels[i])
     
@@ -83,21 +72,30 @@ def use_random_forest(data):
     print("Accuracy: " + str(float(pass_count) / (pass_count + fail_count)))
 
 
-def aggregate_cifar():
+def aggregate_cifar(append_label=True):
     '''
     Aggregates the CIFAR-10 data and returns a single array consisting of 50000 arrays
     with RGB values for each image, last value of each array corresponds to a label
     '''
     full_batch = []
-    full_labels = []
+    full_label = []
     FILE_NAME = "cifar-10-batches-py/data_batch_"
     FILE_NUM = 5 
     IMAGES_PER_BATCH = 10000
-    for i in range(FILE_NUM):
-        batch_data, labels_data = unpickle(FILE_NAME + str(i + 1)) 
-        for j in range(IMAGES_PER_BATCH):
-            full_batch.append(np.append(batch_data[j], labels_data[j]))
-    return full_batch
+
+    if append_label:
+        for i in range(FILE_NUM):
+            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1)) 
+            for j in range(IMAGES_PER_BATCH):
+                full_batch.append(np.append(batch_data[j], labels_data[j]))
+        return full_batch
+    else:
+        for i in range(FILE_NUM):
+            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
+            for j in range(IMAGES_PER_BATCH):
+                full_batch.append(batch_data[j])
+                full_label.append(labels_data[j])
+        return full_batch, full_label
 
 def unpickle(file):
     '''
