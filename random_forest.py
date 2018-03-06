@@ -9,18 +9,24 @@ import random as r
 
 
 class RandomForest:
-    def __init__(data, n_trees=20, sampling_percentage=0.7):
+    def __init__(data, n_trees, sampling_percentage=0.7):
         self.N_TREES = n_trees
-        self.S_PERCENT = sampling_percent # percentage of data to use for each tree
-        self.trees = self.__train_forest(data)
+        self.trees = self.__train_tree(data) if n_trees == 1 else self.__train_forest(data, sampling_percentage)
 
 
-    def __train_forest(data):
+    def __train_tree(data):
+        trees = []
+        trees.append(dt.build_decision_tree)
+
+        return trees
+
+
+    def __train_forest(data, sampling_percent):
         '''
         Returns an array of n_trees decision trees.
         '''
         trees = []
-        sub_sample_size = len(data) * self.S_PERCENT
+        sub_sample_size = len(data) * sampling_percent
 
         for n in range(self.N_TREES):
             trees.append(dt.build_decision_tree(r.sample(data, sub_sample_size)))
