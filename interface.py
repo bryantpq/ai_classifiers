@@ -27,6 +27,7 @@ def print_intro():
 
 def get_classifier():
     print("The available classifiers are a (1) Random Forest and (2) Neural Network.")
+    print("Would you like to use the (1) Random Forest or (2) Neural Network?")
     user_clas = input("> ")
     while user_clas != "1" and user_clas != "2":
         print("Please enter \"1\" for Random Forest or \"2\" for Neural Network...")
@@ -35,7 +36,7 @@ def get_classifier():
 
 def get_data():
     print("The available data sets are (1) CIFAR-10 and (2) CS:GO Matchmaking data.")
-    print("Would you like to use the (1) CIFAR-10 data set or (2) CS:GO Matchmaking data set.")
+    print("Would you like to use the (1) CIFAR-10 data set or (2) CS:GO Matchmaking data set?")
     user_data = input("> ")
     while user_data != "1" and user_data != "2":
         print("Please enter \"1\" for CIFAR-10 or \"2\" for CS:GO Matching data.")
