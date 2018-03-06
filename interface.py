@@ -15,7 +15,7 @@ def main():
     if classifier == "1":
         use_random_forest(data_set)
     else:
-        # use_neural_net
+        use_nn(data_set)
         pass
 
 def print_intro():
@@ -43,7 +43,18 @@ def get_data():
         user_data = input("> ")
     print()
     return user_data
-    
+
+def use_nn(data):
+    input_size = 32 * 32 * 3
+    hidden_size = 80
+    num_classes = 10
+    net = TwoLayeredNet(input_size, hidden_size, num_classes)
+    print('Using default parameters to train: 80 hidden nodes, 1500 iterations, 300 batch size, 1e-4 learning rate, 0.95 learning rate decay, and 0.7 regularization strength')
+    training_data = aggregate_cifar()
+    print(np.array(training_data).shape)
+    X = training_data[0:3072][:]
+    print(np.array(X).shape)
+    net.train()
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
@@ -85,7 +96,7 @@ def aggregate_cifar(append_label=True):
 
     if append_label:
         for i in range(FILE_NUM):
-            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1)) 
+            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
             for j in range(IMAGES_PER_BATCH):
                 full_batch.append(np.append(batch_data[j], labels_data[j]))
         return full_batch
