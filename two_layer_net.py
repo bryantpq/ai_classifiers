@@ -58,6 +58,8 @@ class TwoLayeredNet(object):
         grads['b1'] = db1
         grads['b2'] = db2
 
+        return loss, grads
+
     def train(self, X, y,
               learning_rate=1e-3, learning_rate_decay=0.95,
               reg=5e-6, num_iters=100,
@@ -76,7 +78,6 @@ class TwoLayeredNet(object):
             r_indices = np.random.choice(num_train, batch_size)
             X_batch = X[r_indices]
             y_batch = y[r_indices]
-
             loss, grads = self.loss(X_batch, y=y_batch, r=reg)
 
             self.params['W1'] += -learning_rate * grads['W1']

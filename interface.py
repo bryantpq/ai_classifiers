@@ -58,8 +58,9 @@ def use_nn(data):
 
     test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
     pred_y = net.predict(test_data)
-    print(test_labels)
 
+    acc = (pred_y == test_labels).mean()
+    print("Accuracy: " + str(acc))
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
