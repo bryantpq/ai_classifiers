@@ -50,6 +50,9 @@ def get_data():
     return user_data
 
 def use_nn(data):
+    '''
+    Trains and predicts using a neural net on a data set depending on data 
+    '''
     if data == "1":
         input_size = 32 * 32 * 3
         hidden_size = 80
@@ -172,6 +175,9 @@ def unpickle(file, n_images=None):
     return dict['data'][:n_images], dict['labels'][:n_images] # if n_images = None, use whole array
 
 def load_csgo():
+    '''
+    sets up CSGO data and returns it 
+    '''
     csgo_data = pd.read_csv('mm_master_demos.csv')
     wanted_data = csgo_data[['round', 'seconds', 'hp_dmg', 'att_pos_x', 'att_pos_y', 'award', 'vic_pos_x', 'vic_pos_y',
                              'ct_eq_val', 't_eq_val', 'att_rank', 'vic_rank', 'avg_match_rank']]
