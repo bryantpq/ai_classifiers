@@ -167,8 +167,7 @@ def classify(root, data):
     Returns a dictionary of the results.
     '''
     if isinstance(root, AnswerNode):
-        print(res)
-        return res
+        return root.counts
 
     if root.question.ask(data):
         classify(root.pass_branch, data)
