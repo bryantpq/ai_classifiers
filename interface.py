@@ -98,12 +98,13 @@ def use_nn(data):
         acc = (pred_y == y_test).mean()
         print("Accuracy: " + str(acc))
 
+
 def use_random_forest(data):
-    N_IMAGES_TO_UNPICKLE = 100
+    N_IMAGES_TO_UNPICKLE = 10
     N_FILES_TO_UNPICKLE = 1
     # TODO:
     # add code to use csgo data instead
-    training_data = aggregate_cifar(n_files=N_FILES_TO_UNPICKLE, n_images=N_FILES_TO_UNPICKLE) if data == "1" else aggregate_cifar(files=N_FILES_TO_UNPICKLE, n_images=N_FILES_TO_UNPICKLE)
+    training_data = aggregate_cifar(n_files=N_FILES_TO_UNPICKLE, n_images=N_IMAGES_TO_UNPICKLE) if data == "1" else aggregate_cifar(files=N_FILES_TO_UNPICKLE, n_images=N_IMAGES_TO_UNPICKLE)
     n_trees = input("How many decision trees would you like to use in your " +\
                     "random forest? Use 1 for a decision tree\n> ")
     while not n_trees.isdigit() or int(n_trees) < 1:
@@ -159,6 +160,7 @@ def aggregate_cifar(append_label=True, n_files=5, n_images=None):
                 full_batch.append(batch_data[j])
                 full_label.append(labels_data[j])
         return full_batch, full_label
+
 
 def unpickle(file, n_images=None):
     '''
