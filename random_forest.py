@@ -16,7 +16,7 @@ class RandomForest:
 
     def __train_tree(self, data):
         trees = []
-        trees.append(dt.build_decision_tree)
+        trees.append(dt.build_decision_tree(data))
 
         return trees
 
@@ -26,10 +26,12 @@ class RandomForest:
         Returns an array of n_trees decision trees.
         '''
         trees = []
-        sub_sample_size = len(data) * sampling_percent
+        sub_sample_size = int(len(data) * sampling_percent)
 
         for n in range(self.N_TREES):
-            trees.append(dt.build_decision_tree(r.sample(data, sub_sample_size)))
+            print("Making tree number " + str(n + 1))
+            sub_data = r.sample(data, sub_sample_size)
+            trees.append(dt.build_decision_tree(sub_data))
 
         return trees
 
@@ -38,15 +40,29 @@ class RandomForest:
         '''
         Aggregates the results from the decision trees on the given row.
         '''
-        res = {}
+        agg_res = {}
         for tree in self.trees:
-            res_label = dt.classify(tree, row, label)
-            if res_label not in res:
-                res[res_label] = 0
-            res[res_label] += 1
+            print("Classifying with a new tree...")
+            tree_res = dt.classify(tree, row)
+            # TODO
+            # tree_res is getting None type
+            print(type(tree_res))
+            max_label = None
+            max_val = 0
+            for k in tree_res.keys():
+                if tree_res[k] > max_val:
+                    max_label = k
+                    max_val = res[k]
+            print("This tree thinks the object is: " + str(max_label))
+
+            if max_label not in agg_res:
+                agg_res[max_label] = 0
+            agg_res[max_label] += 1
+
         max_label = None
         max_val = 0
-        for k in res.keys():
-            if res[k] > max_val:
+        for k in agg_res.keys():
+            if agg_res[k] > max_val:
                 max_label = k
+                max_val = agg_res[k]
         return max_label

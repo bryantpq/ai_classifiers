@@ -5,6 +5,8 @@ Decision Tree implementation and associated functions
 Reference: https://github.com/random-forests/tutorials/blob/master/decision_tree.ipynb
 '''
 
+import copy
+
 class Question:
     def __init__(self, col, value):
         '''
@@ -50,7 +52,7 @@ class QuestionNode:
         '''
         self.question = question
         self.pass_branch = pass_branch
-        self.false_branch = false_branch
+        self.fail_branch = fail_branch
 
 
 class AnswerNode:
@@ -59,7 +61,7 @@ class AnswerNode:
         Leaf node of the decision tree, which keeps count of how many of each label
         is present in the rows.
         '''
-        self.counts = self.count_labels(rows, col)
+        self.counts = count_labels(rows, col)
 
 
 def count_labels(data, col=-1):
@@ -105,14 +107,13 @@ def find_best_split(data):
     best_ques = None
     cur_impurity = compute_gini(data)
     num_attributes = len(data[0]) - 1
-
     for col in range(num_attributes):
         # finds the number of possible values for an attribute/column
         values = set([row[col] for row in data]) 
         for value in values:
             cur_ques = Question(col, value)
             pass_rows, fail_rows = split_data(data, cur_ques)
-            if len(pass_rows) == 0 or len(false_rows) == 0: continue 
+            if len(pass_rows) == 0 or len(fail_rows) == 0: continue 
 
             cur_gain = information_gain(pass_rows, fail_rows, cur_impurity)
 
@@ -128,34 +129,48 @@ def build_decision_tree(data):
     Recursive algorithm to build the decision tree for the given data.
     '''
     gain, ques = find_best_split(data)
+    print("Current gain: " + str(gain))
 
     if gain == 0: return AnswerNode(data)
 
     # There is still a better question to split the data
-    pass_rows, fail_rows = split_data(data)
+    pass_rows, fail_rows = split_data(data, ques)
     pass_rows = build_decision_tree(pass_rows)
     fail_rows = build_decision_tree(fail_rows)
 
     return QuestionNode(ques, pass_rows, fail_rows)
 
 
-def classify(root, data, label=True):
+def print_tree(node, spacing=""):
+    """World's most elegant tree printing function."""
+
+    # Base case: we've reached a leaf
+    if isinstance(node, AnswerNode):
+        print (spacing + "Predict", node.counts)
+        return
+
+    # Print the question at this node
+    print (spacing + str(node.question))
+
+    # Call this function recursively on the true branch
+    print (spacing + '--> True:')
+    print_tree(node.pass_branch, spacing + "  ")
+
+    # Call this function recursively on the false branch
+    print (spacing + '--> False:')
+    print_tree(node.fail_branch, spacing + "  ")
+
+
+def classify(root, data):
     '''
     Uses the given decision tree to classify a single row of data.
     Returns a dictionary of the results.
     '''
     if isinstance(root, AnswerNode):
-        if not label:
-            return root.counts
-        else:
-            max_label = None
-            max_val = 0
-            for k in root.counts.keys():
-                if root.counts[k] > max_val:
-                    max_label = k
-            return max_label
+        print(res)
+        return res
 
     if root.question.ask(data):
-        classify(root.true_branch, data)
+        classify(root.pass_branch, data)
     else:
-        classify(root.false_branch, data)
+        classify(root.fail_branch, data)

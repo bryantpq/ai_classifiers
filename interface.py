@@ -61,6 +61,8 @@ def use_nn(data):
 
     acc = (pred_y == test_labels).mean()
     print("Accuracy: " + str(acc))
+    
+
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
@@ -71,24 +73,25 @@ def use_random_forest(data):
         print("Please enter an integer greater than 1...")
         n_trees = input("> ")
     rf = RandomForest(training_data, n_trees) # create and train random forest
+
+    # Run test data
     test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
-    for i in range(len(test_labels)):
-        # TODO:
-        # Something wrong here lol
-        print(i)
-        print(test_labels[i])
-        print(test_data[i])
-        test_data = np.append(test_data[i], test_labels[i])
-        print(test_data)
-        print()
+    test_full = np.array([np.append(test_data[0], test_labels[0])])
+    for i in range(1, len(test_labels)):
+        test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
     
     pass_count = 0
     fail_count = 0
-    for row in test_data:
-        if rf.classify(row) == row[-1]:
+    print("Classifying test data...")
+    for row in test_full:
+        print("Classifying " + str(row) + " of length: " + str(len(row)))
+        res = rf.classify(row)
+        print("Predicted: " + str(res) + "\tActual: " + str(row[-1]))
+        if res == row[-1]:
             pass_count += 1
         else:
             fail_count += 1
+        print()
 
     # Report results
     print("Correct classifications: " + str(pass_count))
@@ -104,19 +107,18 @@ def aggregate_cifar(append_label=True):
     full_batch = []
     full_label = []
     FILE_NAME = "cifar-10-batches-py/data_batch_"
-    FILE_NUM = 5 
-    IMAGES_PER_BATCH = 10000
+    FILE_NUM = 1
 
     if append_label:
         for i in range(FILE_NUM):
             batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
-            for j in range(IMAGES_PER_BATCH):
+            for j in range(len(labels_data)):
                 full_batch.append(np.append(batch_data[j], labels_data[j]))
         return full_batch
     else:
         for i in range(FILE_NUM):
             batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
-            for j in range(IMAGES_PER_BATCH):
+            for j in range(len(labels_data)):
                 full_batch.append(batch_data[j])
                 full_label.append(labels_data[j])
         return full_batch, full_label
@@ -128,7 +130,7 @@ def unpickle(file):
     import pickle
     with open(file, 'rb') as fo:
         dict = pickle.load(fo, encoding='latin1')
-    return dict['data'], dict['labels']
+    return dict['data'][:10], dict['labels'][:10]
 
 if __name__ == "__main__":
     main()
