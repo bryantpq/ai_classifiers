@@ -126,6 +126,7 @@ def build_decision_tree(data):
     Recursive algorithm to build the decision tree for the given data.
     '''
     gain, ques = find_best_split(data)
+    print("Current gain: " + str(gain))
 
     if gain == 0: return AnswerNode(data)
 

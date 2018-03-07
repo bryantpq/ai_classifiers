@@ -17,11 +17,11 @@ def main():
     data_set = get_data()
     if data_set == "2":
         print("Using this dataset we take information about how a player is attacking another player in a game to predict the average rank that the match takes place in.")
+
     if classifier == "1":
         use_random_forest(data_set)
     else:
         use_nn(data_set)
-        pass
 
 def print_intro():
     print("CSE 415 Project on classifiers by Bryan & Matthew.")
@@ -110,27 +110,33 @@ def use_random_forest(data):
         n_trees = input("> ")
     print()
 
-    n_files = input("How many file batches would you like to use?\nThere are 5.\n> ")
-    while not n_files.isdigit() or int(n_files) < 1 or int(n_files) > 5:
-        print("Please enter an integer between 1 and 5...")
-        n_files = input("> ")
-    print()
-    n_files = int(n_files)
+    if data == "1": # use cifar
+        n_files = input("How many file batches would you like to use?\nThere are 5.\n> ")
+        while not n_files.isdigit() or int(n_files) < 1 or int(n_files) > 5:
+            print("Please enter an integer between 1 and 5...")
+            n_files = input("> ")
+        print()
+        n_files = int(n_files)
 
-    n_images = input("How many images would you like from each file?\nThere are 10000 images in each file.\n> ")
-    while not n_images.isdigit() or int(n_images) < 1 or int(n_images) > 10000:
-        print("Please enter an integer between 1 and 10000...")
-        n_images = input("> ")
-    print()
-    n_images = int(n_images)
+        n_images = input("How many images would you like from each file?\nThere are 10000 images in each file.\n> ")
+        while not n_images.isdigit() or int(n_images) < 1 or int(n_images) > 10000:
+            print("Please enter an integer between 1 and 10000...")
+            n_images = input("> ")
+        print()
+        n_images = int(n_images)
+        training_data = aggregate_cifar(n_files=n_files, n_images=n_images)
+    else:           # use csgo
+        pass
+
 
     # TODO:
     # add code to use csgo data instead
-    training_data = aggregate_cifar(n_files=n_files, n_images=n_images) if data == "1" else aggregate_cifar(n_files=n_files, n_images=n_images)
+    start_time = time.time()
     rf = RandomForest(training_data, n_trees) # create and train random forest
+    print("Training time: " + str(time.time() - start_time) + " seconds")
 
     # Run test data
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=10000)
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=10)
     test_full = np.array([np.append(test_data[0], test_labels[0])])
     for i in range(1, len(test_labels)):
         test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
