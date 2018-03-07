@@ -4,7 +4,6 @@ CSE 415 Project
 Decision Tree implementation and associated functions
 Reference: https://github.com/random-forests/tutorials/blob/master/decision_tree.ipynb
 '''
-
 class Question:
     def __init__(self, col, value):
         '''

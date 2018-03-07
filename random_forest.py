@@ -7,7 +7,6 @@ Random forest implementation using decision trees
 import decision_tree as dt
 import random as r
 
-
 class RandomForest:
     def __init__(self, data, n_trees, sampling_percentage=0.7):
         self.N_TREES = int(n_trees)
