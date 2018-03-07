@@ -16,7 +16,7 @@ def main():
     classifier = get_classifier()
     data_set = get_data()
     if data_set == "2":
-        print("Using this dataset we take information about how a player a player is attacking another player in a game to predict the average rank that the match takes place in.")
+        print("Using this dataset we take information about how a player is attacking another player in a game to predict the average rank that the match takes place in.")
     if classifier == "1":
         use_random_forest(data_set)
     else:
@@ -104,20 +104,20 @@ def use_nn(data):
 
 def use_random_forest(data):
     n_trees = input("How many decision trees would you like to use in your " +\
-                    "random forest? Use 1 for a decision tree\n> ")
+                    "random forest?\nUse 1 for a decision tree\n> ")
     while not n_trees.isdigit() or int(n_trees) < 1:
         print("Please enter an integer greater than 1...")
         n_trees = input("> ")
     print()
 
-    n_files = input("How many file batches would you like to use? There are 5.\n> ")
+    n_files = input("How many file batches would you like to use?\nThere are 5.\n> ")
     while not n_files.isdigit() or int(n_files) < 1 or int(n_files) > 5:
         print("Please enter an integer between 1 and 5...")
         n_files = input("> ")
     print()
     n_files = int(n_files)
 
-    n_images = input("How many images would you like from each file? There are 10000 images in each file.\n> ")
+    n_images = input("How many images would you like from each file?\nThere are 10000 images in each file.\n> ")
     while not n_images.isdigit() or int(n_images) < 1 or int(n_images) > 10000:
         print("Please enter an integer between 1 and 10000...")
         n_images = input("> ")
@@ -130,7 +130,7 @@ def use_random_forest(data):
     rf = RandomForest(training_data, n_trees) # create and train random forest
 
     # Run test data
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=n_images)
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=10000)
     test_full = np.array([np.append(test_data[0], test_labels[0])])
     for i in range(1, len(test_labels)):
         test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
