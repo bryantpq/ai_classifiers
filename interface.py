@@ -1,6 +1,7 @@
 '''
 Bryan Quah, Matthew Xu
 CSE 415 Project
+This is the interface that handles user interaction in a command line interface.
 '''
 
 import time
