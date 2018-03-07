@@ -1,7 +1,7 @@
 '''
 Bryan Quah, Matthew Xu
 CSE 415 Project
-This implements a two layer net using a skeleton and guidance from stanford's cs231n course on neural networks. It uses
+This implements a two layer net using using information from stanford's cs231n course on neural networks. It uses
 softmax loss function, l2 regularization, and ReLU instead of sigmoid. 
 '''
 import numpy as np
