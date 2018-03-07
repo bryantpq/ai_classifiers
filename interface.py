@@ -3,7 +3,9 @@ Bryan Quah, Matthew Xu
 CSE 415 Project
 '''
 
+import time
 import numpy as np
+import pandas as pd
 
 from two_layer_net import TwoLayeredNet
 from random_forest import RandomForest
@@ -12,6 +14,8 @@ def main():
     print_intro()
     classifier = get_classifier()
     data_set = get_data()
+    if data_set == "2":
+        print("Using this dataset we take information about how a player a player is attacking another player in a game to predict the average rank that the match takes place in.")
     if classifier == "1":
         use_random_forest(data_set)
     else:
@@ -45,22 +49,54 @@ def get_data():
     return user_data
 
 def use_nn(data):
-    input_size = 32 * 32 * 3
-    hidden_size = 80
-    num_classes = 10
-    net = TwoLayeredNet(input_size, hidden_size, num_classes)
-    print('Using default parameters to train: 80 hidden nodes, 1500 iterations, 300 batch size, 1e-4 learning rate, 0.95 learning rate decay, and 0.7 regularization strength')
-    training_data = aggregate_cifar(False)
-    X = np.array(training_data[0])
-    y = np.array(training_data[1])
+    if data == "1":
+        input_size = 32 * 32 * 3
+        hidden_size = 80
+        num_classes = 10
+        net = TwoLayeredNet(input_size, hidden_size, num_classes)
+        print(
+            'Using tuned parameters to train: 80 hidden nodes, 1500 iterations, 300 batch size, 1e-4 learning rate, 0.95 learning rate decay, and 0.7 regularization strength')
+        training_data = aggregate_cifar(False)
+        X = np.array(training_data[0])
+        y = np.array(training_data[1])
 
-    net.train(X, y, learning_rate=1e-4, learning_rate_decay=0.95, reg=5e-6, num_iters=1500, batch_size=300)
+        print("training...")
+        start_time = time.time()
+        net.train(X, y, learning_rate=1e-4, learning_rate_decay=0.95, reg=5e-6, num_iters=1500, batch_size=300)
+        print("Training time: " + str(time.time() - start_time) + " seconds")
 
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
-    pred_y = net.predict(test_data)
+        test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
+        pred_y = net.predict(test_data)
 
-    acc = (pred_y == test_labels).mean()
-    print("Accuracy: " + str(acc))
+        acc = (pred_y == test_labels).mean()
+        print("Accuracy: " + str(acc))
+    elif data == "2":
+        pass
+        x_data, y_data = load_csgo()
+        x_data = x_data.values
+        y_data = y_data.values.astype(int)
+
+        #splits dataset into training and test
+        x_train = x_data[:int((len(x_data) + 1) * .80)]
+        y_train = y_data[:int((len(y_data) + 1) * .80)]
+        x_test = x_data[int(len(x_data) * .80 + 1):]
+        y_test = y_data[int(len(y_data) * .80 + 1):]
+
+        input_size = 11
+        hidden_size = 50
+        #18 ranks in csgo
+        num_classes = 18
+        net = TwoLayeredNet(input_size, hidden_size, num_classes)
+
+        print("training...")
+        start_time = time.time()
+        net.train(x_train, y_train, learning_rate=1e-4, learning_rate_decay=0.95, reg=5e-6, num_iters=1500, batch_size=300)
+        print("Training time: " + str(time.time() - start_time) + " seconds")
+
+        pred_y = net.predict(x_test)
+        acc = (pred_y == y_test).mean()
+        print("Accuracy: " + str(acc))
+
 def use_random_forest(data):
     # TODO:
     # add code to use csgo data instead
@@ -129,6 +165,15 @@ def unpickle(file):
     with open(file, 'rb') as fo:
         dict = pickle.load(fo, encoding='latin1')
     return dict['data'], dict['labels']
+
+def load_csgo():
+    csgo_data = pd.read_csv('mm_master_demos.csv')
+    wanted_data = csgo_data[['round', 'seconds', 'hp_dmg', 'att_pos_x', 'att_pos_y', 'award', 'vic_pos_x', 'vic_pos_y',
+                             'ct_eq_val', 't_eq_val', 'att_rank', 'vic_rank', 'avg_match_rank']]
+    X = wanted_data.iloc[:, 0:11]
+    y = wanted_data.iloc[:, 12]
+    wanted_data.head()
+    return X, y
 
 if __name__ == "__main__":
     main()
