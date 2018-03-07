@@ -64,18 +64,21 @@ def use_nn(data):
     
 
 def use_random_forest(data):
+    N_IMAGES_TO_UNPICKLE = 100
+    N_FILES_TO_UNPICKLE = 1
     # TODO:
     # add code to use csgo data instead
-    training_data = aggregate_cifar() if data == "1" else aggregate_cifar()
+    training_data = aggregate_cifar(n_files=N_FILES_TO_UNPICKLE, n_images=N_FILES_TO_UNPICKLE) if data == "1" else aggregate_cifar(files=N_FILES_TO_UNPICKLE, n_images=N_FILES_TO_UNPICKLE)
     n_trees = input("How many decision trees would you like to use in your " +\
                     "random forest? Use 1 for a decision tree\n> ")
     while not n_trees.isdigit() or int(n_trees) < 1:
         print("Please enter an integer greater than 1...")
         n_trees = input("> ")
+    print()
     rf = RandomForest(training_data, n_trees) # create and train random forest
 
     # Run test data
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch")
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=N_IMAGES_TO_UNPICKLE)
     test_full = np.array([np.append(test_data[0], test_labels[0])])
     for i in range(1, len(test_labels)):
         test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
@@ -84,8 +87,8 @@ def use_random_forest(data):
     fail_count = 0
     print("Classifying test data...")
     for row in test_full:
-        print("Classifying " + str(row) + " of length: " + str(len(row)))
-        res = rf.classify(row)
+        print("Classifying " + str(row) + " ...")
+        res = rf.classify(row, label=True)
         print("Predicted: " + str(res) + "\tActual: " + str(row[-1]))
         if res == row[-1]:
             pass_count += 1
@@ -96,10 +99,10 @@ def use_random_forest(data):
     # Report results
     print("Correct classifications: " + str(pass_count))
     print("Wrong classifications: " + str(fail_count))
-    print("Accuracy: " + str(float(pass_count) / (pass_count + fail_count)))
+    print("Accuracy: " + str(float(pass_count) * 100/ (pass_count + fail_count)) + "%")
 
 
-def aggregate_cifar(append_label=True):
+def aggregate_cifar(append_label=True, n_files=5, n_images=None):
     '''
     Aggregates the CIFAR-10 data and returns a single array consisting of 50000 arrays
     with RGB values for each image, last value of each array corresponds to a label
@@ -107,30 +110,29 @@ def aggregate_cifar(append_label=True):
     full_batch = []
     full_label = []
     FILE_NAME = "cifar-10-batches-py/data_batch_"
-    FILE_NUM = 1
 
     if append_label:
-        for i in range(FILE_NUM):
-            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
+        for i in range(n_files):
+            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1), n_images=n_images)
             for j in range(len(labels_data)):
                 full_batch.append(np.append(batch_data[j], labels_data[j]))
         return full_batch
     else:
-        for i in range(FILE_NUM):
-            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1))
+        for i in range(n_files):
+            batch_data, labels_data = unpickle(FILE_NAME + str(i + 1), n_images=n_images)
             for j in range(len(labels_data)):
                 full_batch.append(batch_data[j])
                 full_label.append(labels_data[j])
         return full_batch, full_label
 
-def unpickle(file):
+def unpickle(file, n_images=None):
     '''
     Unpacks the data files for CIFAR-10
     '''
     import pickle
     with open(file, 'rb') as fo:
         dict = pickle.load(fo, encoding='latin1')
-    return dict['data'][:10], dict['labels'][:10]
+    return dict['data'][:n_images], dict['labels'][:n_images] # if n_images = None, use whole array
 
 if __name__ == "__main__":
     main()

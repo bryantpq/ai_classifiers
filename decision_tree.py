@@ -5,8 +5,6 @@ Decision Tree implementation and associated functions
 Reference: https://github.com/random-forests/tutorials/blob/master/decision_tree.ipynb
 '''
 
-import copy
-
 class Question:
     def __init__(self, col, value):
         '''
@@ -141,26 +139,6 @@ def build_decision_tree(data):
     return QuestionNode(ques, pass_rows, fail_rows)
 
 
-def print_tree(node, spacing=""):
-    """World's most elegant tree printing function."""
-
-    # Base case: we've reached a leaf
-    if isinstance(node, AnswerNode):
-        print (spacing + "Predict", node.counts)
-        return
-
-    # Print the question at this node
-    print (spacing + str(node.question))
-
-    # Call this function recursively on the true branch
-    print (spacing + '--> True:')
-    print_tree(node.pass_branch, spacing + "  ")
-
-    # Call this function recursively on the false branch
-    print (spacing + '--> False:')
-    print_tree(node.fail_branch, spacing + "  ")
-
-
 def classify(root, data):
     '''
     Uses the given decision tree to classify a single row of data.
@@ -170,6 +148,6 @@ def classify(root, data):
         return root.counts
 
     if root.question.ask(data):
-        classify(root.pass_branch, data)
+        return classify(root.pass_branch, data)
     else:
-        classify(root.fail_branch, data)
+        return classify(root.fail_branch, data)
