@@ -100,21 +100,34 @@ def use_nn(data):
 
 
 def use_random_forest(data):
-    N_IMAGES_TO_UNPICKLE = 10
-    N_FILES_TO_UNPICKLE = 1
-    # TODO:
-    # add code to use csgo data instead
-    training_data = aggregate_cifar(n_files=N_FILES_TO_UNPICKLE, n_images=N_IMAGES_TO_UNPICKLE) if data == "1" else aggregate_cifar(files=N_FILES_TO_UNPICKLE, n_images=N_IMAGES_TO_UNPICKLE)
     n_trees = input("How many decision trees would you like to use in your " +\
                     "random forest? Use 1 for a decision tree\n> ")
     while not n_trees.isdigit() or int(n_trees) < 1:
         print("Please enter an integer greater than 1...")
         n_trees = input("> ")
     print()
+
+    n_files = input("How many file batches would you like to use? There are 5.\n> ")
+    while not n_files.isdigit() or int(n_files) < 1 or int(n_files) > 5:
+        print("Please enter an integer between 1 and 5...")
+        n_files = input("> ")
+    print()
+    n_files = int(n_files)
+
+    n_images = input("How many images would you like from each file? There are 10000 images in each file.\n> ")
+    while not n_images.isdigit() or int(n_images) < 1 or int(n_images) > 10000:
+        print("Please enter an integer between 1 and 10000...")
+        n_images = input("> ")
+    print()
+    n_images = int(n_images)
+
+    # TODO:
+    # add code to use csgo data instead
+    training_data = aggregate_cifar(n_files=n_files, n_images=n_images) if data == "1" else aggregate_cifar(n_files=n_files, n_images=n_images)
     rf = RandomForest(training_data, n_trees) # create and train random forest
 
     # Run test data
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=N_IMAGES_TO_UNPICKLE)
+    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=n_images)
     test_full = np.array([np.append(test_data[0], test_labels[0])])
     for i in range(1, len(test_labels)):
         test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))

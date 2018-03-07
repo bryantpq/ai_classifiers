@@ -30,7 +30,7 @@ class RandomForest:
         sub_sample_size = int(len(data) * sampling_percent)
 
         for n in range(self.N_TREES):
-            print("Making tree number " + str(n + 1))
+            print("Making " + str(n + 1) + "-th tree...")
             sub_data = r.sample(data, sub_sample_size)
             trees.append(dt.build_decision_tree(sub_data))
 
