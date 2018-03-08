@@ -6,14 +6,21 @@ Random forest implementation using decision trees
 
 import decision_tree as dt
 import random as r
+import numpy as np
 
 class RandomForest:
     def __init__(self, data, n_trees, sampling_percentage=0.7):
+        '''
+        Constructs a random forest on a data set with a fixed number of trees.
+        '''
         self.N_TREES = int(n_trees)
         self.trees = self.__train_tree(data) if int(n_trees) == 1 else self.__train_forest(data, sampling_percentage)
 
 
     def __train_tree(self, data):
+        '''
+        Returns a single decision tree built on the given data.
+        '''
         trees = []
         print("Making 1 decision tree...")
         trees.append(dt.build_decision_tree(data))
@@ -30,6 +37,8 @@ class RandomForest:
 
         for n in range(self.N_TREES):
             print("Making " + str(n + 1) + "-th tree...")
+            if isinstance(data, np.ndarray):
+                data = np.ndarray.tolist(data)
             sub_data = r.sample(data, sub_sample_size)
             trees.append(dt.build_decision_tree(sub_data))
 

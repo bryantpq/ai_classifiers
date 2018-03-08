@@ -16,7 +16,7 @@ def main():
     classifier = get_classifier()
     data_set = get_data()
     if data_set == "2":
-        print("Using this dataset we take information about how a player is attacking another player in a game to predict the average rank that the match takes place in.")
+        print("Using this dataset we take information about how a player is attacking another player in a game to predict the average rank that the match takes place in.\n")
 
     if classifier == "1":
         use_random_forest(data_set)
@@ -24,12 +24,18 @@ def main():
         use_nn(data_set)
 
 def print_intro():
+    '''
+    Outputs what the program is about.
+    '''
     print("CSE 415 Project on classifiers by Bryan & Matthew.")
     print("This program selects a classifier and trains it on a selected data set.")
     print("After that, it runs the trained classifier on some testing data and reports the results.")
     print()
 
 def get_classifier():
+    '''
+    Gets the type of classifier the user would like to use.
+    '''
     print("The available classifiers are a (1) Random Forest and (2) Neural Network.")
     print("Would you like to use the (1) Random Forest or (2) Neural Network?")
     user_clas = input("> ")
@@ -40,6 +46,9 @@ def get_classifier():
     return user_clas
 
 def get_data():
+    '''
+    Gets which data set the user would like to use.
+    '''
     print("The available data sets are (1) CIFAR-10 and (2) CS:GO Matchmaking data.")
     print("Would you like to use the (1) CIFAR-10 data set or (2) CS:GO Matchmaking data set?")
     user_data = input("> ")
@@ -51,7 +60,7 @@ def get_data():
 
 def use_nn(data):
     '''
-    Trains and predicts using a neural net on a data set depending on data 
+    Trains and predicts using a neural net on a data set.
     '''
     if data == "1":
         input_size = 32 * 32 * 3
@@ -103,6 +112,9 @@ def use_nn(data):
 
 
 def use_random_forest(data):
+    '''
+    Trains and predicts using a random forest on a data set.
+    '''
     n_trees = input("How many decision trees would you like to use in your " +\
                     "random forest?\nUse 1 for a decision tree\n> ")
     while not n_trees.isdigit() or int(n_trees) < 1:
@@ -134,26 +146,19 @@ def use_random_forest(data):
             test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
 
     else:           # use csgo
-        print("Unpacking CS:GO data...")
-        full_data, full_classes = load_csgo()
+        n_data = input("How many rows of data would you like to use for training and testing? 955466 rows available.\n80% will be used for training, 20% for testing\n> ")
+        while not n_data.isdigit() or int(n_data) < 1 or int(n_data) > 955466:
+            print("Please enter an integer between 1 and 955466...")
+            n_data = input("> ")
+        print()
+        n_data = int(n_data)
+        full_data = load_csgo(False)
         full_data = full_data.values
-        full_classes = full_classes.values.astype(int)
+        full_data = full_data[:n_data]
 
         #splits dataset into training and test
-        train_data = full_data[:int((len(full_data) + 1) * .80)]
-        test_data = full_data[int(len(full_data) * .80 + 1):]
-
-        train_label = full_classes[:int((len(full_classes) + 1) * .80)]
-        test_label = full_classes[int(len(full_classes) * .80 + 1):]
-
-
-        training_data = np.array([np.append(train_data[0], train_label[0])])
-        for i in range(1, len(train_label)):
-            training_data = np.vstack((training_data, np.append(train_data[i], train_label[i])))
-
-        test_full = np.array([np.append(test_data[0], train_label[0])])
-        for i in range(1, len(test_label)):
-            test_full = np.vstack((test_data, np.append(test_data[i], test_labels[i])))
+        training_data = full_data[:int((len(full_data) + 1) * .80)]
+        test_full = full_data[int(len(full_data) * .80 + 1):]
 
         print("Done unpacking CS:GO data...")
 
@@ -166,14 +171,12 @@ def use_random_forest(data):
     fail_count = 0
     print("Classifying test data...")
     for row in test_full:
-        print("Classifying " + str(row) + " ...")
         res = rf.classify(row, label=True)
         print("Predicted: " + str(res) + "\tActual: " + str(row[-1]))
         if res == row[-1]:
             pass_count += 1
         else:
             fail_count += 1
-        print()
 
     # Report results
     print("Correct classifications: " + str(pass_count))

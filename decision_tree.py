@@ -2,7 +2,6 @@
 Bryan Quah, Matthew Xu
 CSE 415 Project
 Decision Tree implementation and associated functions
-Reference: https://github.com/random-forests/tutorials/blob/master/decision_tree.ipynb
 '''
 class Question:
     def __init__(self, col, value):
@@ -126,7 +125,6 @@ def build_decision_tree(data):
     Recursive algorithm to build the decision tree for the given data.
     '''
     gain, ques = find_best_split(data)
-    print("Current gain: " + str(gain))
 
     if gain == 0: return AnswerNode(data)
 
