@@ -111,6 +111,7 @@ def use_random_forest(data):
     print()
 
     if data == "1": # use cifar
+        # Get training data
         n_files = input("How many file batches would you like to use?\nThere are 5.\n> ")
         while not n_files.isdigit() or int(n_files) < 1 or int(n_files) > 5:
             print("Please enter an integer between 1 and 5...")
@@ -125,21 +126,41 @@ def use_random_forest(data):
         print()
         n_images = int(n_images)
         training_data = aggregate_cifar(n_files=n_files, n_images=n_images)
+
+        # Get test data
+        test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=10)
+        test_full = np.array([np.append(test_data[0], test_labels[0])])
+        for i in range(1, len(test_labels)):
+            test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
+
     else:           # use csgo
-        pass
+        print("Unpacking CS:GO data...")
+        full_data, full_classes = load_csgo()
+        full_data = full_data.values
+        full_classes = full_classes.values.astype(int)
+
+        #splits dataset into training and test
+        train_data = full_data[:int((len(full_data) + 1) * .80)]
+        test_data = full_data[int(len(full_data) * .80 + 1):]
+
+        train_label = full_classes[:int((len(full_classes) + 1) * .80)]
+        test_label = full_classes[int(len(full_classes) * .80 + 1):]
 
 
-    # TODO:
-    # add code to use csgo data instead
+        training_data = np.array([np.append(train_data[0], train_label[0])])
+        for i in range(1, len(train_label)):
+            training_data = np.vstack((training_data, np.append(train_data[i], train_label[i])))
+
+        test_full = np.array([np.append(test_data[0], train_label[0])])
+        for i in range(1, len(test_label)):
+            test_full = np.vstack((test_data, np.append(test_data[i], test_labels[i])))
+
+        print("Done unpacking CS:GO data...")
+
     start_time = time.time()
     rf = RandomForest(training_data, n_trees) # create and train random forest
     print("Training time: " + str(time.time() - start_time) + " seconds")
 
-    # Run test data
-    test_data, test_labels = unpickle("cifar-10-batches-py/test_batch", n_images=10)
-    test_full = np.array([np.append(test_data[0], test_labels[0])])
-    for i in range(1, len(test_labels)):
-        test_full = np.vstack((test_full, np.append(test_data[i], test_labels[i])))
     
     pass_count = 0
     fail_count = 0
